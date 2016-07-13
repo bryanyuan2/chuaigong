@@ -64,10 +64,13 @@ $(document).ready(function() {
         "speed": ['5', '5.5', '6'],
         "color": ['#FFFFFF']
     };
-    var STREAMING_SYNTAX = {
-        "[love]": "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-love.png",
-        "[ball]": "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-ball.png"
-    };
+    var STREAMING_SYNTAX = [{
+        "pattern": "[love]",
+        "icon": "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-love.png",
+    },{
+        "pattern": "[ball]",
+        "icon": "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-ball.png",
+    }];
     var CONST_COMMENT_START_POS = "-600px";
 
     /* setInterval and reach comment */
@@ -91,18 +94,23 @@ $(document).ready(function() {
                     var comment_img = document.createElement('img');
 
                     /* comment container */
-                    $(comment_container).addClass('comment-container').addClass("loc-start").css({
-                        'top': (STREAMING_CONF.top[getTop]*1.2) + "px",
-                        'left': (1500 + STREAMING_CONF.left[getLeft] * 50) + "px",
-                        'fontSize': (STREAMING_CONF.fontSize[getFontSize] + "px"),
-                        'color': STREAMING_CONF.color[getColor]
-                    });
+                    $(comment_container).addClass('comment-container')
+                                        .addClass("loc-start")
+                                        .css({
+                                            'top': (STREAMING_CONF.top[getTop]*1.2) + "px",
+                                            'left': (1500 + STREAMING_CONF.left[getLeft] * 50) + "px",
+                                            'fontSize': (STREAMING_CONF.fontSize[getFontSize] + "px"),
+                                            'color': STREAMING_CONF.color[getColor]
+                                        });
 
                     /* img container */
-                    if (comment.indexOf('[love]') != '-1') {
-                        $(comment_img_wrapper).addClass("comment-img-wrapper");
-                        $(comment_img).addClass("comment-img").attr("src", "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-love.png").appendTo($(comment_img_wrapper));
-                        $(comment_img_wrapper).appendTo($(comment_container));
+                    for($icon_checker=0;$icon_checker<STREAMING_SYNTAX.length;$icon_checker++){
+                        if (comment.indexOf(STREAMING_SYNTAX[$icon_checker].pattern) != '-1') {
+                            $(comment_img).addClass("comment-img")
+                                          .attr("src", STREAMING_SYNTAX[$icon_checker].icon)
+                                          .appendTo($(comment_img_wrapper));
+                            $(comment_img_wrapper).addClass("comment-img-wrapper").appendTo($(comment_container));
+                        }
                     }
 
                     /* text container */
