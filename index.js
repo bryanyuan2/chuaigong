@@ -84,6 +84,7 @@ router.post('/index', function(req, res, next) {
 */
 router.get('/video', video.getVideo);
 router.get('/getcomment', video.getComment);
+router.get('/getslaughter', video.getSlaughter);
 
 var whitelist = [
     'http://localhost:3000',

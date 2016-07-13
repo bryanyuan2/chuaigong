@@ -13,7 +13,7 @@
         height: 100%;
         position: absolute;
         background-color: rgba(0, 0, 0, 0.1);
-        z-index: 10;
+        z-index: 2;
         color: #FFFFFF;
         font-size: 36px;
     }
@@ -22,7 +22,7 @@
         position: absolute;
     }
     .comment-item {
-        width: 100%;
+        width: auto;
         font-family: LiHei Pro, "helvetica neue", helvetica, arial, "microsoft jhenghei", "Heiti TC", sans-serif;
         text-shadow: 0px 0px 10px rgba(150, 150, 150, 1);
         font-size: 30px;
@@ -44,10 +44,23 @@
     .bot-video {
         margin-top: 32px;
     }
+
+    .demo-btn {
+        text-align: center;
+        color: #FFFFFF;
+        position: absolute;
+        float: right;
+        background-color: red;
+        width: 100px;
+        z-index: 5;
+        line-height: 28px;
+        cursor: pointer;
+    }
 </style>
 <div class="header">
     <img width="100%" src="https://dl.dropboxusercontent.com/u/7120885/botday/header.jpg" />
 </div>
+<div class="demo-btn">slaughter</div>
 <div class="video-overlay">
     <!--<div class="comment-item">測試留言 A</div>-->
 </div>
@@ -61,9 +74,15 @@
 <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    //var GET_COMMENT_API = "http://localhost:3000/bot/getcomment",
-    var GET_COMMENT_API = "http://hack.wjhuang.net:3000/bot/getcomment",
-        CONST_TIME_INTERVAL = 2000;
+
+    /* this should be replaced when env changes */
+    //var DOMAIN = "localhost",
+
+    var DOMAIN = "hack.wjhuang.net",
+        GET_COMMENT_API = "http://" + DOMAIN + ":3000/bot/getcomment",
+        GET_DEMO_API = "http://" + DOMAIN + ":3000/bot/getslaughter",
+        CONST_NORMAL_INTERVAL = 2000,
+        CONST_DEMO_INTERVAL = 1000;
     var STREAMING_CONF = {
         'left': ['1', '2', '3', '4', '5'],
         "fontSize": ['18', '24', '28', '32'],
@@ -84,7 +103,24 @@ $(document).ready(function() {
         "pattern": "謝謝",
         "icon": "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-thanks.png"
     }];
-    var CONST_COMMENT_START_POS = "-100%";
+    var CONST_COMMENT_START_POS = "-120px";
+
+    $(".demo-btn").on('click', function(){
+        $.getJSON(GET_DEMO_API, function(data) {
+            console.log("slaughter", data);
+            if (data[0]['status'] === 'ok') {
+                var second_counter = 1;
+                setInterval(function(){
+                    for(var i=0;i<data[1]['comment'].length;i++) {
+                        if (data[2]['time'][i] == second_counter) {
+                            getComponentRendering(data[1]['comment'][i]);
+                        }
+                    }
+                    second_counter = second_counter + 1;
+                }, CONST_DEMO_INTERVAL);
+            }
+        });
+    });
 
     /* setInterval and reach comment */
     setInterval(function(){
@@ -94,56 +130,60 @@ $(document).ready(function() {
             if (data[0]['status'] === 'ok') {
                 for(var i=0;i<data[1]['comment'].length;i++) {
                     var comment = data[1]['comment'][i];
-
-                    /* random */
-                    var getTop = Math.floor((Math.random() * STREAMING_CONF.top.length));
-                    var getLeft = Math.floor((Math.random() * STREAMING_CONF.left.length));
-                    var getSpeed = Math.floor((Math.random() * STREAMING_CONF.speed.length));
-                    var getFontSize = Math.floor((Math.random() * STREAMING_CONF.fontSize.length));
-                    var getColor = Math.floor((Math.random() * STREAMING_CONF.color.length));
-
-                    var comment_container = document.createElement('div');
-                    var comment_item = document.createElement('div');
-                    var comment_img_wrapper = document.createElement('div');
-                    var comment_img = document.createElement('img');
-
-                    /* comment container */
-                    $(comment_container).addClass('comment-container')
-                                        .addClass("loc-start")
-                                        .css({
-                                            'top': (STREAMING_CONF.top[getTop]*1.2) + "px",
-                                            'left': ($(window).width() + STREAMING_CONF.left[getLeft] * 50) + "px",
-                                            'fontSize': (STREAMING_CONF.fontSize[getFontSize] + "px"),
-                                            'color': STREAMING_CONF.color[getColor]
-                                        });
-
-                    /* img container */
-                    for($icon_checker=0;$icon_checker<STREAMING_SYNTAX.length;$icon_checker++){
-                        // replace the syntax
-                        if (comment.indexOf(STREAMING_SYNTAX[$icon_checker].pattern) != '-1') {
-                            $(comment_img).addClass("comment-img")
-                                          .attr("src", STREAMING_SYNTAX[$icon_checker].icon)
-                                          .appendTo($(comment_img_wrapper));
-                            $(comment_img_wrapper).addClass("comment-img-wrapper").appendTo($(comment_container));
-                        }
-                        if (STREAMING_SYNTAX[$icon_checker].id != '3') {
-                            comment = comment.replace(STREAMING_SYNTAX[$icon_checker].pattern, "");
-                        }
-                    }
-
-                    /* text container */
-                    $(comment_item).text(comment).addClass('comment-item').appendTo(comment_container);
-                    $(comment_container).animate({
-                        left: CONST_COMMENT_START_POS,
-                    }, (STREAMING_CONF.speed[getSpeed] * 2000)).appendTo($(".video-overlay"));
-
+                    getComponentRendering(comment);
                 }
             // no comment
             } else if (data[0]['status'] === 'empty') {
                 //console.log("empty");
             }
         });
-    }, CONST_TIME_INTERVAL);
+    }, CONST_NORMAL_INTERVAL);
+
+    function getComponentRendering(comment) {
+        /* random */
+        var getTop = Math.floor((Math.random() * STREAMING_CONF.top.length));
+        var getLeft = Math.floor((Math.random() * STREAMING_CONF.left.length));
+        var getSpeed = Math.floor((Math.random() * STREAMING_CONF.speed.length));
+        var getFontSize = Math.floor((Math.random() * STREAMING_CONF.fontSize.length));
+        var getColor = Math.floor((Math.random() * STREAMING_CONF.color.length));
+
+        var comment_container = document.createElement('div');
+        var comment_item = document.createElement('div');
+        var comment_img_wrapper = document.createElement('div');
+        var comment_img = document.createElement('img');
+
+        /* comment container */
+        $(comment_container).addClass('comment-container')
+                            .addClass("loc-start")
+                            .css({
+                                'top': (STREAMING_CONF.top[getTop]*1.2) + "px",
+                                'left': ($(window).width() + STREAMING_CONF.left[getLeft] * 50) + "px",
+                                'fontSize': (STREAMING_CONF.fontSize[getFontSize] + "px"),
+                                'color': STREAMING_CONF.color[getColor]
+                            });
+
+        /* img container */
+        for($icon_checker=0;$icon_checker<STREAMING_SYNTAX.length;$icon_checker++){
+            // replace the syntax
+            if (comment.indexOf(STREAMING_SYNTAX[$icon_checker].pattern) != '-1') {
+                $(comment_img).addClass("comment-img")
+                              .attr("src", STREAMING_SYNTAX[$icon_checker].icon)
+                              .appendTo($(comment_img_wrapper));
+                $(comment_img_wrapper).addClass("comment-img-wrapper").appendTo($(comment_container));
+            }
+            if (STREAMING_SYNTAX[$icon_checker].id != '3') {
+                comment = comment.replace(STREAMING_SYNTAX[$icon_checker].pattern, "");
+            }
+        }
+
+        /* text container */
+        $(comment_item).text(comment).addClass('comment-item').appendTo(comment_container);
+        $(comment_container).animate({
+            left: CONST_COMMENT_START_POS,
+        }, (STREAMING_CONF.speed[getSpeed] * 2000), function(){
+            $(this).remove();
+        }).appendTo($(".video-overlay"));
+    }
 
 });
 </script>
