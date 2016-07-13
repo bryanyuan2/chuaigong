@@ -3,8 +3,8 @@
         max-width: 100%;
     }
     .video-overlay {
-        width: 1424px;
-        height: 1000px;
+        width: 100%;
+        height: 100%;
         position: absolute;
         background-color: rgba(0, 0, 0, 0.1);
         z-index: 10;
@@ -31,7 +31,7 @@
     }
 </style>
 <div class="header">
-    <img width="1424" src="https://dl.dropboxusercontent.com/u/7120885/botday/header.jpg" />
+    <img width="100%" src="https://dl.dropboxusercontent.com/u/7120885/botday/header.jpg" />
 </div>
 <div class="video-overlay">
     <!--<div class="comment-item">測試留言 A</div>-->
@@ -51,8 +51,8 @@ $(document).ready(function() {
     var STREAMING_CONF = {
         'left': ['1', '2', '3', '4', '5'],
         "fontSize": ['18', '24', '28', '32'],
-        "top": ['120px', '200px', '280px', '320px', '440px', '500px', '320px'],
-        "speed": ['3', '3.5', '4', '4.5', '5']
+        "top": ['120px', '150px', '180px', '210px', '240px', '270px', '300px', '330px', '360px'],
+        "speed": ['5', '5.5', '6']
     };
     var CONST_COMMENT_START_POS = "-600px";
 
@@ -74,11 +74,12 @@ $(document).ready(function() {
                     $(comment_item).text(comment).addClass('comment-item').addClass("loc-start").css({
                         'top': STREAMING_CONF.top[getTop],
                         'left': (1500 + STREAMING_CONF.left[getLeft] * 20) + "px",
+                        'fontSize': (STREAMING_CONF.fontSize[getFontSize] + "px"),
                     }).appendTo($(".video-overlay"));
 
                     $(comment_item).animate({
                         left: CONST_COMMENT_START_POS,
-                    }, (getSpeed * 2000));
+                    }, (STREAMING_CONF.speed[getSpeed] * 2000));
 
                 }
             // no comment
