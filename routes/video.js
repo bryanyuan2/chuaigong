@@ -27,7 +27,7 @@ botModel.getComment = function(req, res) {
         // show up comment
         target_result.push(target_comment);
       } else {
-        console.log("empty");
+        //console.log("empty");
       }
     }
 
