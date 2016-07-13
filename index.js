@@ -7,6 +7,9 @@ var port = process.env.PORT || 3000;
 var router = express.Router();
 var helmet = require('helmet');
 var cors = require('cors');
+var fs = require('fs');
+var path = require("path");
+
 var _get = require('lodash/get');
 var likes = [
     '851582_369239386556143_1497813874',
@@ -29,6 +32,7 @@ router.get('/', function(req, res) {
     description: restful api to get msg indexing
 */
 router.post('/index', function(req, res, next) {
+
     var body = req.body;
     var attachment;
     var message = body.message || '';
@@ -36,6 +40,12 @@ router.post('/index', function(req, res, next) {
     var userid = body.userid || 'john_doe';
 
     var messageText = '';
+
+
+    // extract keyword
+    // TODO
+    // [LOVE], [BALL] ...
+
 
     // process received message
     if(messageType === 'attachments') {
@@ -58,7 +68,9 @@ router.post('/index', function(req, res, next) {
     }
 
     if (messageText) {
-        console.log('messageText:', messageText);
+        var commentPath = path.join(__dirname+'/routes/comment');
+        var timestamp = Date.now();
+        fs.appendFileSync(commentPath, messageText + '|' + timestamp + '\n');
     }
 
     res.status(200).json({text: 'kerker'});
