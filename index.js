@@ -70,7 +70,7 @@ router.post('/index', function(req, res, next) {
     }
 
     if (messageText) {
-        var commentPath = path.join(__dirname+'/routes/comment');
+        var commentPath = path.join(__dirname+'/routes/log/comment');
         var timestamp = Date.now();
         fs.appendFileSync(commentPath, messageText + '|' + timestamp + '\n');
     }
