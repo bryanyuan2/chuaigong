@@ -5,7 +5,8 @@ var botModel = {};
 
 botModel.getVideo = function(req, res) {
     var output = res,
-        LOG_FILENAME = "comment";
+        CONST_LOG_FILENAME = "comment",
+        CONST_TIME_INTERVAL = 3000;
 
     /* read comment */
     fs.readFile( path.join(__dirname+'/'+ LOG_FILENAME), 'utf8', function (err,data) {
@@ -22,10 +23,10 @@ botModel.getVideo = function(req, res) {
       }
     });
 
-    /* setInterval */
+    /* setInterval and reach comment */
     setInterval(function(){
       console.log("Hello");
-    }, 3000);
+    }, CONST_TIME_INTERVAL);
 
 
     //output.send("show video");
