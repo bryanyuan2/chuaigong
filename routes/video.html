@@ -65,11 +65,17 @@ $(document).ready(function() {
         "color": ['#FFFFFF']
     };
     var STREAMING_SYNTAX = [{
-        "pattern": "[love]",
+        "id": "1",
+        "pattern": "[LIKE]",
         "icon": "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-love.png",
     },{
-        "pattern": "[ball]",
+        "id": "2",
+        "pattern": "[BALL]",
         "icon": "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-ball.png",
+    },{
+        "id": "3",
+        "pattern": "謝謝",
+        "icon": "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-thanks.png"
     }];
     var CONST_COMMENT_START_POS = "-600px";
 
@@ -105,11 +111,15 @@ $(document).ready(function() {
 
                     /* img container */
                     for($icon_checker=0;$icon_checker<STREAMING_SYNTAX.length;$icon_checker++){
+                        // replace the syntax
                         if (comment.indexOf(STREAMING_SYNTAX[$icon_checker].pattern) != '-1') {
                             $(comment_img).addClass("comment-img")
                                           .attr("src", STREAMING_SYNTAX[$icon_checker].icon)
                                           .appendTo($(comment_img_wrapper));
                             $(comment_img_wrapper).addClass("comment-img-wrapper").appendTo($(comment_container));
+                        }
+                        if (STREAMING_SYNTAX[$icon_checker].id != '3') {
+                            comment = comment.replace(STREAMING_SYNTAX[$icon_checker].pattern, "");
                         }
                     }
 
