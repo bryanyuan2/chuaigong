@@ -22,7 +22,15 @@ router.get('/', function(req, res) {
     path: http://localhost:8080/bot/index
     description: restful api to get msg indexing
 */
-router.get('/index', index.logIndex);
+router.post('/index', function(req, res, next) {
+    var body = req.body;
+
+    // get user text
+    var text = body.text;
+
+    console.log('>>> received:', body);
+    res.status(200).json({status: 'got', msg: 'kerker'});
+});
 
 /*
     http://localhost:8080/bot/video
