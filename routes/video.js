@@ -5,10 +5,10 @@ var botModel = {};
 
 botModel.getVideo = function(req, res) {
     var output = res,
-        log_filename = "comment";
+        LOG_FILENAME = "comment";
 
     /* read comment */
-    fs.readFile( path.join(__dirname+'/'+ log_filename), 'utf8', function (err,data) {
+    fs.readFile( path.join(__dirname+'/'+ LOG_FILENAME), 'utf8', function (err,data) {
       if (err) {
         return console.log(err);
       }
