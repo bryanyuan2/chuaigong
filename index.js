@@ -96,6 +96,8 @@ var corsOptions = {
     },
     credentials: true
 };
+
+app.use(express.static('public'));
 app.use(cors(corsOptions));
 
 /* */

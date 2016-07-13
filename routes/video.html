@@ -92,16 +92,28 @@ $(document).ready(function() {
     };
     var STREAMING_SYNTAX = [{
         "id": "1",
-        "pattern": "[LIKE]",
-        "icon": "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-love.png",
+        "pattern": "讚",
+        "icon": "http://" + DOMAIN + ":3000/images/icon/bot-thumb.png",
     },{
         "id": "2",
-        "pattern": "[BALL]",
-        "icon": "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-ball.png",
+        "pattern": "好球",
+        "icon": "http://" + DOMAIN + ":3000/images/icon/bot-ball.png",
     },{
         "id": "3",
         "pattern": "謝謝",
-        "icon": "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-thanks.png"
+        "icon": "http://" + DOMAIN + ":3000/images/icon/bot-thanks.png"
+    },{
+        "id": "4",
+        "pattern": "幹",
+        "icon": "http://" + DOMAIN + ":3000/images/icon/bot-dislike.png",
+    },{
+        "id": "5",
+        "pattern": "加油",
+        "icon": "http://" + DOMAIN + ":3000/images/icon/bot-cheers.png",
+    },{
+        "id": "6",
+        "pattern": "[LIKE]",
+        "icon": "http://" + DOMAIN + ":3000/images/icon/bot-like.png",
     }];
     var CONST_COMMENT_START_POS = "-120px";
 
@@ -171,7 +183,7 @@ $(document).ready(function() {
                               .appendTo($(comment_img_wrapper));
                 $(comment_img_wrapper).addClass("comment-img-wrapper").appendTo($(comment_container));
             }
-            if (STREAMING_SYNTAX[$icon_checker].id != '3') {
+            if (STREAMING_SYNTAX[$icon_checker].id == '6') {
                 comment = comment.replace(STREAMING_SYNTAX[$icon_checker].pattern, "");
             }
         }
