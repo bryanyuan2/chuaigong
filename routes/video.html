@@ -88,6 +88,7 @@ $(document).ready(function() {
                 for(var i=0;i<data[1]['comment'].length;i++) {
                     var comment = data[1]['comment'][i];
 
+                    /* random */
                     var getTop = Math.floor((Math.random() * STREAMING_CONF.top.length));
                     var getLeft = Math.floor((Math.random() * STREAMING_CONF.left.length));
                     var getSpeed = Math.floor((Math.random() * STREAMING_CONF.speed.length));
@@ -104,7 +105,7 @@ $(document).ready(function() {
                                         .addClass("loc-start")
                                         .css({
                                             'top': (STREAMING_CONF.top[getTop]*1.2) + "px",
-                                            'left': (1500 + STREAMING_CONF.left[getLeft] * 50) + "px",
+                                            'left': ($(window).width() + STREAMING_CONF.left[getLeft] * 50) + "px",
                                             'fontSize': (STREAMING_CONF.fontSize[getFontSize] + "px"),
                                             'color': STREAMING_CONF.color[getColor]
                                         });
