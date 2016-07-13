@@ -1,6 +1,6 @@
 {
-  "name": "yahoo botday 2016",
-  "version": "0.1",
+  "name": "chuaigong-bot",
+  "version": "v0.1.0",
   "description": "yahoo botday 2016",
   "main": "index.js",
   "scripts": {
