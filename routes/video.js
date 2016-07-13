@@ -6,10 +6,11 @@ var botModel = {};
 botModel.getVideo = function(req, res) {
     var output = res,
         CONST_LOG_FILENAME = "comment",
-        CONST_TIME_INTERVAL = 3000;
+        CONST_TIME_INTERVAL = 3000,
+        CONST_VIDEO_HTML_SOURCE = "video.html";
 
     /* read comment */
-    fs.readFile( path.join(__dirname+'/'+ LOG_FILENAME), 'utf8', function (err,data) {
+    fs.readFile( path.join(__dirname+'/'+ CONST_LOG_FILENAME), 'utf8', function (err,data) {
       if (err) {
         return console.log(err);
       }
@@ -30,7 +31,7 @@ botModel.getVideo = function(req, res) {
 
 
     //output.send("show video");
-    output.sendFile(path.join(__dirname+'/video.html'));
+    output.sendFile(path.join(__dirname+ '/' + CONST_VIDEO_HTML_SOURCE));
 
 };
 
