@@ -37,8 +37,7 @@ router.post('/index', function(req, res, next) {
     description: portal to play video
 */
 router.get('/video', video.getVideo);
-
-
+router.get('/getcomment', video.getComment);
 
 var whitelist = [
     'http://localhost:3000',

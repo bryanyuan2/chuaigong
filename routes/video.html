@@ -32,3 +32,30 @@
             <source id="mp4" src="http://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4" type="video/mp4">
         </video>
 </div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    var GET_COMMENT_API = "http://localhost:3000/bot/getcomment",
+        CONST_TIME_INTERVAL = 3000;
+
+    /* setInterval and reach comment */
+    setInterval(function(){
+        // get comment
+        $.getJSON( GET_COMMENT_API, function( data ) {
+            console.log("data", data);
+
+            // get comment
+            if (data[0]['status'] === 'ok') {
+                for(var i=0;i<data[1]['comment'].length;i++) {
+                    console.log("get = " + data[1]['comment'][i]);
+                }
+
+            // no comment
+            } else if (data[0]['status'] === 'empty') {
+                //console.log("empty");
+            }
+        });
+    }, CONST_TIME_INTERVAL);
+
+});
+</script>
