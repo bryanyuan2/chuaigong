@@ -4,18 +4,31 @@ var fs = require('fs');
 var botModel = {};
 
 botModel.getVideo = function(req, res) {
-    var output = res;
-    var video = '';
-    var log_filename = "comment";
+    var output = res,
+        log_filename = "comment";
 
+    /* read comment */
     fs.readFile( path.join(__dirname+'/'+ log_filename), 'utf8', function (err,data) {
       if (err) {
         return console.log(err);
       }
-      console.log(data);
+
+      data = data.split('\n');
+      for(var i=0;i<data.length-1;i++) {
+        var line = data[i].split('|');
+        var target_comment = line[0],
+            target_timestamp = line[1];
+        console.log(target_comment, target_timestamp);
+      }
     });
 
-    //output.send("show index" + video);
+    /* setInterval */
+    setInterval(function(){
+      console.log("Hello");
+    }, 3000);
+
+
+    //output.send("show video");
     output.sendFile(path.join(__dirname+'/video.html'));
 
 };
