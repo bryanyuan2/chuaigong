@@ -11,3 +11,7 @@
 npm i
 PORT=3000 npm start
 ```
+
+## Screenshot
+
+![CHUAIGONG LOGO](https://raw.githubusercontent.com/bryanyuan2/chuaigong-bot/master/resources/screenshot.png)
