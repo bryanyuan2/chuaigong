@@ -11,13 +11,22 @@
         color: #FFFFFF;
         font-size: 36px;
     }
-    .comment-item {
+    .comment-container {
         width: 100%;
         position: absolute;
+    }
+    .comment-item {
+        width: 100%;
         font-family: LiHei Pro, "helvetica neue", helvetica, arial, "microsoft jhenghei", "Heiti TC", sans-serif;
         text-shadow: 0px 0px 10px rgba(150, 150, 150, 1);
         font-size: 30px;
         line-height: 42px;
+    }
+    .comment-img-wrapper {
+        position: relative;
+        float: left;
+    }
+    .comment-img {
     }
     .loc-start {
         top: 0px;
@@ -41,24 +50,29 @@
         <!--<video class="bot-video" width="100%" height="100%" autobuffer controls autoplay>
             <source id="mp4" src="http://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4" type="video/mp4">
         </video>-->
-        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/1ZpCNbc6QIQ?autoplay=1&start=2270" frameborder="0" allowfullscreen></iframe>
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/1ZpCNbc6QIQ?autoplay=1&start=3370" frameborder="0" allowfullscreen></iframe>
 </div>
 <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     var GET_COMMENT_API = "http://localhost:3000/bot/getcomment",
-        CONST_TIME_INTERVAL = 3000;
+        CONST_TIME_INTERVAL = 2000;
     var STREAMING_CONF = {
         'left': ['1', '2', '3', '4', '5'],
         "fontSize": ['18', '24', '28', '32'],
-        "top": ['120px', '150px', '180px', '210px', '240px', '270px', '300px', '330px', '360px'],
-        "speed": ['5', '5.5', '6']
+        "top": ['60', '120', '180', '240', '300', '360', '420', '330', '390', '450'],
+        "speed": ['5', '5.5', '6'],
+        "color": ['#FFFFFF']
+    };
+    var STREAMING_SYNTAX = {
+        "[love]": "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-love.png",
+        "[ball]": "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-ball.png"
     };
     var CONST_COMMENT_START_POS = "-600px";
 
     /* setInterval and reach comment */
     setInterval(function(){
-        $.getJSON( GET_COMMENT_API, function( data ) {
+        $.getJSON(GET_COMMENT_API, function(data) {
             console.log("data", data);
             // get comment
             if (data[0]['status'] === 'ok') {
@@ -69,17 +83,33 @@ $(document).ready(function() {
                     var getLeft = Math.floor((Math.random() * STREAMING_CONF.left.length));
                     var getSpeed = Math.floor((Math.random() * STREAMING_CONF.speed.length));
                     var getFontSize = Math.floor((Math.random() * STREAMING_CONF.fontSize.length));
+                    var getColor = Math.floor((Math.random() * STREAMING_CONF.color.length));
 
+                    var comment_container = document.createElement('div');
                     var comment_item = document.createElement('div');
-                    $(comment_item).text(comment).addClass('comment-item').addClass("loc-start").css({
-                        'top': STREAMING_CONF.top[getTop],
-                        'left': (1500 + STREAMING_CONF.left[getLeft] * 20) + "px",
-                        'fontSize': (STREAMING_CONF.fontSize[getFontSize] + "px"),
-                    }).appendTo($(".video-overlay"));
+                    var comment_img_wrapper = document.createElement('div');
+                    var comment_img = document.createElement('img');
 
-                    $(comment_item).animate({
+                    /* comment container */
+                    $(comment_container).addClass('comment-container').addClass("loc-start").css({
+                        'top': (STREAMING_CONF.top[getTop]*1.2) + "px",
+                        'left': (1500 + STREAMING_CONF.left[getLeft] * 50) + "px",
+                        'fontSize': (STREAMING_CONF.fontSize[getFontSize] + "px"),
+                        'color': STREAMING_CONF.color[getColor]
+                    });
+
+                    /* img container */
+                    if (comment.indexOf('[love]') != '-1') {
+                        $(comment_img_wrapper).addClass("comment-img-wrapper");
+                        $(comment_img).addClass("comment-img").attr("src", "https://dl.dropboxusercontent.com/u/7120885/botday/icon/bot-love.png").appendTo($(comment_img_wrapper));
+                        $(comment_img_wrapper).appendTo($(comment_container));
+                    }
+
+                    /* text container */
+                    $(comment_item).text(comment).addClass('comment-item').appendTo(comment_container);
+                    $(comment_container).animate({
                         left: CONST_COMMENT_START_POS,
-                    }, (STREAMING_CONF.speed[getSpeed] * 2000));
+                    }, (STREAMING_CONF.speed[getSpeed] * 2000)).appendTo($(".video-overlay"));
 
                 }
             // no comment

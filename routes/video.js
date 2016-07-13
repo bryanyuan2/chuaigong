@@ -1,7 +1,6 @@
 var _ = require("lodash");
 var path = require("path");
 var fs = require('fs');
-
 var botModel = {};
 
 /* previous_tstamp */

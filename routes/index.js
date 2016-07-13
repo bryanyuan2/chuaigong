@@ -1,7 +1,7 @@
 var _ = require("lodash");
-var botModel = {};
 var fs = require('fs');
 var path = require("path");
+var botModel = {};
 
 botModel.logIndex = function(req, res) {
     var log_filename = "comment";
