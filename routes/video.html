@@ -73,7 +73,7 @@ $(document).ready(function() {
                     var comment_item = document.createElement('div');
                     $(comment_item).text(comment).addClass('comment-item').addClass("loc-start").css({
                         'top': STREAMING_CONF.top[getTop],
-                        'left': (1500 + STREAMING_CONF.top[getLeft] * 20) + "px",
+                        'left': (1500 + STREAMING_CONF.left[getLeft] * 20) + "px",
                     }).appendTo($(".video-overlay"));
 
                     $(comment_item).animate({

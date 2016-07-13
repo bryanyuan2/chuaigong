@@ -44,7 +44,6 @@ botModel.getComment = function(req, res) {
 
 botModel.getVideo = function(req, res) {
     var CONST_VIDEO_HTML_SOURCE = "video.html";
-
     res.sendFile(path.join(__dirname+ '/' + CONST_VIDEO_HTML_SOURCE));
 
 };
