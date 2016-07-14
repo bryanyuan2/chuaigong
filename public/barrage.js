@@ -218,7 +218,7 @@ Segment.prototype.getBuckets = function(minBucketSize) {
     return this.seg;
 };
 Segment.prototype.insert = function(ele) {
-    console.log('insert', ele.l, ele.r, ele.val-__TS);
+    //console.log('insert', ele.l, ele.r, ele.val-__TS);
     var arr = [];
     // gen
     for (var i=0; i<this.seg.length; i++) {
@@ -291,10 +291,10 @@ var Barrage = function(width, height) {
     this.WIDTH = width;
     this.HEIGHT = height;
     // text constraints
-    this.MIN_SIZE = Math.max(height/24, 12);
-    this.MAX_SIZE = Math.min(height/6, 60);
+    this.MIN_SIZE = Math.max(height/24, 24);
+    this.MAX_SIZE = Math.min(height/6, 70);
     this.MIN_SPEED = Math.max(width/12, 36);
-    this.MAX_SPEED = Math.min(width/3, 200);
+    this.MAX_SPEED = Math.min(width/3, 240);
     this.PADDING = Math.max(this.MIN_SIZE/3, 12);
     // definition of "recent" event
     this.RECENT_DUR = 10 * 1000; // 10s
@@ -316,16 +316,27 @@ Barrage.prototype.getThroughput = function(text) {
     return this.recent.getSum() * 1000 / this.RECENT_DUR;
 };
 
-Barrage.prototype.getOutputInfo = function(text) {
+Barrage.prototype.shoot = function(html, css, parent, videoLeftBufferWidth) {
     var tnow = Date.now();
-    this.recent.push(new Event(tnow, text.length));
+    var bullet = $('<div class="bullet">' + html + '</div>').first();
+    var css = {
+        'visible': 'hidden',
+        'left': this.WIDTH+'px',
+        'transition-property': 'left',
+        'transition-timing-function': 'linear'
+    };
+    bullet.css(css);
+    parent.append(bullet);
+    var w = bullet.width();
+
+    this.recent.push(new Event(tnow, w));
     // use throughput to determine size & speed
     var throughput = this.getThroughput();
     var prod = throughput * 1000 / (this.HEIGHT * this.USE_RATIO);
-    var size = this.MAX_SIZE/Math.sqrt(prod) * 6;
-    size = Math.min(Math.max(size, this.MIN_SIZE), this.MAX_SIZE);
+    var size = this.MAX_SIZE/Math.sqrt(prod) * 12;
+    size = Math.min(Math.max(size, this.MIN_SIZE), this.MAX_SIZE) + (Math.random()*8);
     var speed = prod * 800 /size; // px/sec
-    speed = Math.min(Math.max(speed, this.MIN_SPEED), this.MAX_SPEED);
+    speed = Math.min(Math.max(speed, this.MIN_SPEED), this.MAX_SPEED) + (Math.random()*20);
     console.log(prod, size, speed);
     // with size & speed given, determine where the text should emerge
     // the probability to emerge at a position scale with how early the position is available
@@ -344,7 +355,7 @@ Barrage.prototype.getOutputInfo = function(text) {
     //console.log('idx', idx);
     // with bucket fixed, determine y & t
     var b0 = buckets[idx];
-    console.log('b0', b0.dump());
+    //console.log('b0', b0.dump());
     var y0 = b0.l + (b0.getSize() - size) * Math.random();
     y0 = Math.min(Math.max(y0, 0), this.HEIGHT-size);
     //
@@ -355,23 +366,42 @@ Barrage.prototype.getOutputInfo = function(text) {
     }
     var t0 = Math.max(b0.val + this.PADDING*1000/speed, tnow);
     // update segment
-    var approxTextLen = StringUtils.getMbStringWidth(text) * size * 1.2;
-    console.log(approxTextLen, approxTextLen*1000/speed);
-    this.segment.insert(new Bucket(y0, y0+size, t0+approxTextLen*1000/speed));
-    console.log(this.segment.dump());
+    //var approxTextLen = StringUtils.getMbStringWidth(text) * size * 1.2;
+    //console.log(approxTextLen, approxTextLen*1000/speed);
+    //this.segment.insert(new Bucket(y0, y0+size, t0+approxTextLen*1000/speed));
+    this.segment.insert(new Bucket(y0, y0+size, t0+w*1000/speed));
+    //console.log(this.segment.dump());
     //
-    return {
-        text: text,
-        size: size,
-        //speed: speed/this.WIDTH, // speed unit is 100%W/1000
-        speed: speed,
-        y: y0,
-        t: t0
-    };
+    //return {
+        //text: text,
+        //size: size,
+        ////speed: speed/this.WIDTH, // speed unit is 100%W/1000
+        //speed: speed,
+        //y: y0,
+        //t: t0
+    //};
+    //
+    //////
+    var travelDist = this.WIDTH + w;
+    var dur = travelDist / speed;
+    // shoot!
+    setTimeout(function() {
+        css = {
+            'top': y0+'px',
+            'font-size': size+'px',
+            'visibility': 'visible',
+            'transition-duration': dur+'s',
+            'left': (-videoLeftBufferWidth-w)+'px'
+        };
+        bullet.css(css);
+        setTimeout(function() { bullet.remove(); }, dur*1000);
+    }, t0-Date.now());
+
+    return bullet;
 };
 
-Barrage.prototype.input = function(text, callback) {
-    var outputInfo = this.getOutputInfo(text);
-    var timeFromNow = Math.max((outputInfo.t - Date.now()), 0) / 1000;
-    setTimeout(callback.bind(undefined, outputInfo), timeFromNow);
-};
+//Barrage.prototype.input = function(text, callback) {
+    //var outputInfo = this.getOutputInfo(text);
+    //var timeFromNow = Math.max((outputInfo.t - Date.now()), 0) / 1000;
+    //setTimeout(callback.bind(undefined, outputInfo), timeFromNow);
+//};
