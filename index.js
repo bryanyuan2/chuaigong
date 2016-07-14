@@ -70,7 +70,7 @@ router.post('/index', function(req, res, next) {
     }
 
     if (messageText) {
-        var commentPath = path.join(__dirname+'/routes/log/comment');
+        var commentPath = path.join(__dirname+'/routes/log_demo/comment');
         var timestamp = Date.now();
         fs.appendFileSync(commentPath, messageText + '|' + timestamp + '\n');
     }
@@ -82,7 +82,8 @@ router.post('/index', function(req, res, next) {
     http://localhost:8080/bot/video
     description: portal to play video
 */
-router.get('/video', video.getVideo);
+router.get('/livedemoit', video.getVideo);
+
 router.get('/getcomment', video.getComment);
 router.get('/getslaughter', video.getSlaughter);
 
