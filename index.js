@@ -23,6 +23,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(helmet());
 
+var DOMAIN = "hack.wjhuang.net";
+var STREAMING_SYNTAX = {
+    "讚":"http://" + DOMAIN + ":3000/images/icon/bot-thumb.png",
+    "好球": "http://" + DOMAIN + ":3000/images/icon/bot-ball.png",
+    "謝謝": "http://" + DOMAIN + ":3000/images/icon/bot-thanks.png",
+    "幹": "http://" + DOMAIN + ":3000/images/icon/bot-dislike.png",
+    "爽": "http://" + DOMAIN + ":3000/images/icon/bot-cheers.png",
+    "[LIKE]": "http://" + DOMAIN + ":3000/images/icon/bot-like.png",
+    "[SUPERLIKE]": "http://" + DOMAIN + ":3000/images/icon/bot-thumb.png"
+}
+
 /* root */
 router.get('/', function(req, res) {
     res.json({ message: '2016 yahoo botday' });
@@ -48,7 +59,6 @@ router.post('/index', function(req, res, next) {
     // TODO
     // [LOVE], [BALL] ...
 
-
     // process received message
     if(messageType === 'attachments') {
         // attachment = message && message.length && message[0];
@@ -70,12 +80,21 @@ router.post('/index', function(req, res, next) {
     }
 
     if (messageText) {
+        // replace text
+console.log('>>> messageText:', messageText);
+        var comment = messageText;
+        if(messageText in STREAMING_SYNTAX) {
+            var src = STREAMING_SYNTAX[messageText];
+            comment = '<img src="' + src + '" class="sticker" />';
+        }
+console.log('>>> commment:', comment);
+
         var commentPath = path.join(__dirname+'/routes/log_demo/comment');
         var timestamp = Date.now();
-        fs.appendFileSync(commentPath, messageText + '|' + timestamp + '\n');
+        fs.appendFileSync(commentPath, comment + '|' + timestamp + '\n');
     }
 
-    res.status(200).json({text: 'kerker'});
+    res.status(200).end();
 });
 
 /*

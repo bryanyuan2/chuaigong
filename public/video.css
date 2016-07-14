@@ -35,7 +35,10 @@ body {
 }
 
 
-
+img.sticker {
+    width: 160px;
+    height: 160px;
+}
 
 
 .comment-container {
