@@ -63,6 +63,7 @@ router.post('/index', function(req, res, next) {
     if(messageType === 'attachments') {
         // attachment = message && message.length && message[0];
         var sticker_url = _get(message, '0.payload.url', '');
+        messageText = sticker_url;
         for (var i=0; i<likes.length; i++) {
             if(sticker_url.indexOf(likes[i]) > 0) {
                 messageText = '[LIKE]';
@@ -86,7 +87,11 @@ console.log('>>> messageText:', messageText);
         if(messageText in STREAMING_SYNTAX) {
             var src = STREAMING_SYNTAX[messageText];
             comment = '<img src="' + src + '" class="sticker" />';
+        } else if (messageType === 'attachments') {
+            var src = messageText;
+            comment = '<img src="' + src + '" class="sticker" />';
         }
+
 console.log('>>> commment:', comment);
 
         var commentPath = path.join(__dirname+'/routes/log_demo/comment');
