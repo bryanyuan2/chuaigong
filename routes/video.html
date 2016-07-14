@@ -123,6 +123,9 @@ $(document).ready(function() {
             if (data[0]['status'] === 'ok') {
                 var second_counter = 1;
                 setInterval(function(){
+
+                    // hjyang need: data[1]['comment'][i]
+                    // getDynamicComponentRendering(cfg = array('comment' => '', 'top' => '', 'left' => '', 'speed => ''', 'fontSize => ''', 'color' => ''))
                     for(var i=0;i<data[1]['comment'].length;i++) {
                         if (data[2]['time'][i] == second_counter) {
                             getComponentRendering(data[1]['comment'][i]);
@@ -140,6 +143,9 @@ $(document).ready(function() {
             console.log("data", data);
             // get comment
             if (data[0]['status'] === 'ok') {
+
+                // hjyang need: data[1]['comment'][i]
+                //getDynamicComponentRendering(cfg = array('comment' => '', 'top' => '', 'left' => '', 'speed => ''', 'fontSize => ''', 'color' => ''))
                 for(var i=0;i<data[1]['comment'].length;i++) {
                     var comment = data[1]['comment'][i];
                     getComponentRendering(comment);
@@ -150,6 +156,50 @@ $(document).ready(function() {
             }
         });
     }, CONST_NORMAL_INTERVAL);
+
+    /*
+    function getDynamicComponentRendering(cfg = array('comment' => '', 'top' => '', 'left' => '', 'speed => ''', 'fontSize => ''', 'color' => '')) {
+
+        // array('comment', 'top', 'left', 'speed', 'fontSize', 'color')
+
+        var comment_container = document.createElement('div');
+        var comment_item = document.createElement('div');
+        var comment_img_wrapper = document.createElement('div');
+        var comment_img = document.createElement('img');
+
+        // comment container
+        $(comment_container).addClass('comment-container')
+                            .addClass("loc-start")
+                            .css({
+                                'top': cfg['top'],
+                                'left': cfg['left'],
+                                'fontSize': cfg['fontSize'],
+                                'color': cfg['color']
+                            });
+
+        // img container
+        for(var icon_checker=0;icon_checker<STREAMING_SYNTAX.length;icon_checker++){
+            // replace the syntax
+            if (comment.indexOf(STREAMING_SYNTAX[icon_checker].pattern) != '-1') {
+                $(comment_img).addClass("comment-img")
+                              .attr("src", STREAMING_SYNTAX[icon_checker].icon)
+                              .appendTo($(comment_img_wrapper));
+                $(comment_img_wrapper).addClass("comment-img-wrapper").appendTo($(comment_container));
+            }
+            if (STREAMING_SYNTAX[icon_checker].id == '6') {
+                comment = comment.replace(STREAMING_SYNTAX[icon_checker].pattern, "");
+            }
+        }
+
+        // text container
+        $(comment_item).text(comment).addClass('comment-item').appendTo(comment_container);
+        $(comment_container).animate({
+            left: CONST_COMMENT_START_POS,
+        }, (cfg['speed']), function(){
+            $(this).remove();
+        }).appendTo($(".video-overlay"));
+    }
+    */
 
     function getComponentRendering(comment) {
         /* random */
@@ -175,16 +225,16 @@ $(document).ready(function() {
                             });
 
         /* img container */
-        for($icon_checker=0;$icon_checker<STREAMING_SYNTAX.length;$icon_checker++){
+        for(var icon_checker=0;icon_checker<STREAMING_SYNTAX.length;icon_checker++){
             // replace the syntax
-            if (comment.indexOf(STREAMING_SYNTAX[$icon_checker].pattern) != '-1') {
+            if (comment.indexOf(STREAMING_SYNTAX[icon_checker].pattern) != '-1') {
                 $(comment_img).addClass("comment-img")
-                              .attr("src", STREAMING_SYNTAX[$icon_checker].icon)
+                              .attr("src", STREAMING_SYNTAX[icon_checker].icon)
                               .appendTo($(comment_img_wrapper));
                 $(comment_img_wrapper).addClass("comment-img-wrapper").appendTo($(comment_container));
             }
-            if (STREAMING_SYNTAX[$icon_checker].id == '6') {
-                comment = comment.replace(STREAMING_SYNTAX[$icon_checker].pattern, "");
+            if (STREAMING_SYNTAX[icon_checker].id == '6') {
+                comment = comment.replace(STREAMING_SYNTAX[icon_checker].pattern, "");
             }
         }
 
