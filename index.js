@@ -73,7 +73,7 @@ router.post('/index', function(req, res, next) {
     else if (messageType === 'text') {
         // pick a message from message pool
         // TODO
-        if (msgs.indexOf(message) >= 0) {
+        if (message.indexOf('已加入 #') >= 0) {
             // do nothing
         } else {
             messageText = message;
@@ -82,7 +82,6 @@ router.post('/index', function(req, res, next) {
 
     if (messageText) {
         // replace text
-console.log('>>> messageText:', messageText);
         var comment = messageText;
         if(messageText in STREAMING_SYNTAX) {
             var src = STREAMING_SYNTAX[messageText];
