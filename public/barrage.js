@@ -292,7 +292,7 @@ var Barrage = function(width, height) {
     this.HEIGHT = height;
     // text constraints
     this.MIN_SIZE = Math.max(height/24, 24);
-    this.MAX_SIZE = Math.min(height/6, 70);
+    this.MAX_SIZE = Math.min(height/6, 60);
     this.MIN_SPEED = Math.max(width/12, 36);
     this.MAX_SPEED = Math.min(width/3, 240);
     this.PADDING = Math.max(this.MIN_SIZE/3, 12);
@@ -338,7 +338,8 @@ Barrage.prototype.shoot = function(html, css, parent, videoLeftBufferWidth) {
     bullet.css(css);
     parent.append(bullet);
     var w = bullet.width();
-    console.log('w', w);
+    var h = bullet.height();
+    console.log('w', w, 'h', h);
 
     this.recent.push(new Event(tnow, w));
 
@@ -362,7 +363,7 @@ Barrage.prototype.shoot = function(html, css, parent, videoLeftBufferWidth) {
     var b0 = buckets[idx];
     //console.log('b0', b0.dump());
     var y0 = b0.l + (b0.getSize() - size) * Math.random();
-    y0 = Math.min(Math.max(y0, 0), this.HEIGHT-size);
+    y0 = Math.min(Math.max(y0, 0), this.HEIGHT-Math.max(size, h));
     //
     var bb = b0.val;
     for (var i=0; i<buckets.length; i++) {
