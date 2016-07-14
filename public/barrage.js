@@ -319,24 +319,29 @@ Barrage.prototype.getThroughput = function(text) {
 Barrage.prototype.shoot = function(html, css, parent, videoLeftBufferWidth) {
     var tnow = Date.now();
     var bullet = $('<div class="bullet">' + html + '</div>').first();
+
+    // use throughput to determine size & speed
+    var throughput = this.getThroughput();
+    var prod = Math.max(throughput * 1000 / (this.HEIGHT * this.USE_RATIO), 1);
+    var size = this.MAX_SIZE/Math.sqrt(prod) * 16;
+    size = Math.min(Math.max(size, this.MIN_SIZE), this.MAX_SIZE) + (Math.random()*8);
+    var speed = prod * 800 /size; // px/sec
+    speed = Math.min(Math.max(speed, this.MIN_SPEED), this.MAX_SPEED) + (Math.random()*20);
+
     var css = {
         'visible': 'hidden',
         'left': this.WIDTH+'px',
+        'font-size': size+'px',
         'transition-property': 'left',
         'transition-timing-function': 'linear'
     };
     bullet.css(css);
     parent.append(bullet);
     var w = bullet.width();
+    console.log('w', w);
 
     this.recent.push(new Event(tnow, w));
-    // use throughput to determine size & speed
-    var throughput = this.getThroughput();
-    var prod = throughput * 1000 / (this.HEIGHT * this.USE_RATIO);
-    var size = this.MAX_SIZE/Math.sqrt(prod) * 12;
-    size = Math.min(Math.max(size, this.MIN_SIZE), this.MAX_SIZE) + (Math.random()*8);
-    var speed = prod * 800 /size; // px/sec
-    speed = Math.min(Math.max(speed, this.MIN_SPEED), this.MAX_SPEED) + (Math.random()*20);
+
     console.log(prod, size, speed);
     // with size & speed given, determine where the text should emerge
     // the probability to emerge at a position scale with how early the position is available
@@ -388,7 +393,6 @@ Barrage.prototype.shoot = function(html, css, parent, videoLeftBufferWidth) {
     setTimeout(function() {
         css = {
             'top': y0+'px',
-            'font-size': size+'px',
             'visibility': 'visible',
             'transition-duration': dur+'s',
             'left': (-videoLeftBufferWidth-w)+'px'
