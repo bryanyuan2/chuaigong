@@ -65,22 +65,6 @@ $(document).ready(function() {
     }];
     var CONST_COMMENT_START_POS = "-120px";
 
-    $(".demo-btn").on('click', function(){
-        $.getJSON(GET_DEMO_API, function(data) {
-            console.log("slaughter", data);
-            if (data[0]['status'] === 'ok') {
-                var second_counter = 1;
-                setInterval(function(){
-                    for(var i=0;i<data[1]['comment'].length;i++) {
-                        if (data[2]['time'][i] == second_counter) {
-                            getComponentRendering(data[1]['comment'][i]);
-                        }
-                    }
-                    second_counter = second_counter + 1;
-                }, CONST_DEMO_INTERVAL);
-            }
-        });
-    });
 
     var __T = Date.now();
     var videoOverlay = $('.video-overlay');
@@ -100,8 +84,8 @@ $(document).ready(function() {
             var idx = Math.min(Math.floor(Math.random()*10), 9);
             str += _rs[idx];
         }
-        return str;
     }
+
 
     function generateText(str, size, y, speed, t, videoOverlay) {
         setTimeout(function() {
@@ -142,7 +126,7 @@ $(document).ready(function() {
         generateText(str, size, y, speed, t, videoOverlay);
     }
 
-    setInterval(function() {
+    /* setInterval(function() {
         var t = randText();
         delegateToBarrage(t);
         console.log(t);
@@ -151,8 +135,49 @@ $(document).ready(function() {
         var t = randText();
         delegateToBarrage(t);
         console.log(t);
-    }, 300);
-    
+    }, 300);*/
+ 
+
+    /* setInterval and reach comment */
+    setInterval(function(){
+        $.getJSON(GET_COMMENT_API, function(data) {
+            console.log("data", data);
+            // get comment
+            if (data[0]['status'] === 'ok') {
+
+                // hjyang need: data[1]['comment'][i]
+                //getDynamicComponentRendering(cfg = array('comment' => '', 'top' => '', 'left' => '', 'speed => ''', 'fontSize => ''', 'color' => ''))
+                for(var i=0;i<data[1]['comment'].length;i++) {
+                    var comment = data[1]['comment'][i];
+                    delegateToBarrage(comment);
+                }
+            // no comment
+            } else if (data[0]['status'] === 'empty') {
+                //console.log("empty");
+            }
+        });
+    }, CONST_NORMAL_INTERVAL);
+
+
+    $(".demo-btn").on('click', function(){
+        $.getJSON(GET_DEMO_API, function(data) {
+            console.log("slaughter", data);
+            if (data[0]['status'] === 'ok') {
+                var second_counter = 1;
+                setInterval(function(){
+
+                    // hjyang need: data[1]['comment'][i]
+                    // getDynamicComponentRendering(cfg = array('comment' => '', 'top' => '', 'left' => '', 'speed => ''', 'fontSize => ''', 'color' => ''))
+                    for(var i=0;i<data[1]['comment'].length;i++) {
+                        if (data[2]['time'][i] == second_counter) {
+                            delegateToBarrage(data[1]['comment'][i]);
+                        }
+                    }
+                    second_counter = second_counter + 1;
+                }, CONST_DEMO_INTERVAL);
+            }
+        });
+    });
 
 });
 </script>
