@@ -4,7 +4,7 @@ $(document).ready(function() {
     //var DOMAIN = "localhost",
 
     var DOMAIN = "hack.wjhuang.net",
-        GET_COMMENT_API = "http://" + DOMAIN + ":3000/bot/getcomment",
+        GET_COMMENT_API = "http://" + DOMAIN + ":3000/bot/getmongocomment",
         GET_DEMO_API = "http://" + DOMAIN + ":3000/bot/getslaughter",
         CONST_NORMAL_INTERVAL = 2000,
         CONST_DEMO_INTERVAL = 1000;

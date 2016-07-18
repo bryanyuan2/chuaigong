@@ -31,8 +31,7 @@ router.post('/index', index.handleMessage);
 */
 router.get('/livedemoit', video.getVideo);
 
-router.get('/getcomment', video.getCommentFromMongo);
-router.get('/getfilecomment', video.getCommentFromFile);
+router.get('/getmongocomment', video.getCommentFromMongo);
 
 router.get('/getslaughter', video.getSlaughter);
 
