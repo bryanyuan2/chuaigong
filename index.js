@@ -17,6 +17,8 @@ var likes = [
     '851557_369239266556155_759568595'
 ];
 
+var msgs = ['大聲講話啊', '一起踹共啊', '快點打字啊'];
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(helmet());
@@ -60,15 +62,15 @@ router.post('/index', function(req, res, next) {
     else if (messageType === 'text') {
         // pick a message from message pool
         // TODO
-        if (message == '收到') {
-            //
+        if (msgs.indexOf(message) >= 0) {
+            // do nothing
         } else {
             messageText = message;
         }
     }
 
     if (messageText) {
-        var commentPath = path.join(__dirname+'/routes/comment');
+        var commentPath = path.join(__dirname+'/routes/log_demo/comment');
         var timestamp = Date.now();
         fs.appendFileSync(commentPath, messageText + '|' + timestamp + '\n');
     }
@@ -80,8 +82,10 @@ router.post('/index', function(req, res, next) {
     http://localhost:8080/bot/video
     description: portal to play video
 */
-router.get('/video', video.getVideo);
+router.get('/livedemoit', video.getVideo);
+
 router.get('/getcomment', video.getComment);
+router.get('/getslaughter', video.getSlaughter);
 
 var whitelist = [
     'http://localhost:3000',
@@ -93,6 +97,8 @@ var corsOptions = {
     },
     credentials: true
 };
+
+app.use(express.static('public'));
 app.use(cors(corsOptions));
 
 /* */
