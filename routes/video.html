@@ -1,77 +1,26 @@
-<style>
-    body {
-        overflow-x: hidden;
-        padding: 0;
-        margin: 0;
-        min-width: 1024px;
-    }
-    .header {
-        max-width: 100%;
-    }
-    .video-overlay {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        background-color: rgba(0, 0, 0, 0.1);
-        z-index: 2;
-        color: #FFFFFF;
-        font-size: 36px;
-    }
-    .comment-container {
-        width: 100%;
-        position: absolute;
-    }
-    .comment-item {
-        width: auto;
-        font-family: LiHei Pro, "helvetica neue", helvetica, arial, "microsoft jhenghei", "Heiti TC", sans-serif;
-        text-shadow: 0px 0px 10px rgba(150, 150, 150, 1);
-        font-size: 30px;
-        line-height: 42px;
-    }
-    .comment-img-wrapper {
-        position: relative;
-        float: left;
-    }
-    .comment-img {
-    }
-    .loc-start {
-        top: 0px;
-        left: 1500px;
-    }
-    .video-section {
-        background-color: #000000;
-    }
-    .bot-video {
-        margin-top: 32px;
-    }
-    .demo-btn {
-        text-align: center;
-        color: #FFFFFF;
-        position: absolute;
-        float: right;
-        background-color: red;
-        width: 100px;
-        z-index: 5;
-        line-height: 28px;
-        cursor: pointer;
-    }
-</style>
-<div class="header">
-    <img width="100%" src="https://dl.dropboxusercontent.com/u/7120885/botday/header.jpg" />
-</div>
-<div class="demo-btn">slaughter</div>
-<div class="video-overlay">
-    <!--<div class="comment-item">測試留言 A</div>-->
-</div>
+<head>
+    <link rel="stylesheet" type="text/css" href="/video.css">
+</head>
+<body>
+    <div class="header">
+        <img width="100%" src="https://dl.dropboxusercontent.com/u/7120885/botday/header.jpg" />
+    </div>
+    <div class="demo-btn">slaughter</div>
     <div class="video-section">
-        <!-- sample video -->
-        <!--<video class="bot-video" width="100%" height="100%" autobuffer controls autoplay>
-            <source id="mp4" src="http://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4" type="video/mp4">
-        </video>-->
-        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/1ZpCNbc6QIQ?autoplay=1&start=7660" frameborder="0" allowfullscreen></iframe>
-</div>
-<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-<script type="text/javascript">
+        <div class="video-overlay">
+            <!--<div class="comment-item">測試留言 A</div>-->
+        </div>
+            <!-- sample video -->
+            <!--<video class="bot-video" width="100%" height="100%" autobuffer controls autoplay>
+                <source id="mp4" src="http://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4" type="video/mp4">
+            </video>-->
+            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/1ZpCNbc6QIQ?autoplay=1&start=7660" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/lodash/4.13.1/lodash.min.js"></script>
+    <script src="/barrage.js"></script>
+</body>
+    <script type="text/javascript">
 $(document).ready(function() {
 
     /* this should be replaced when env changes */
@@ -116,30 +65,86 @@ $(document).ready(function() {
     }];
     var CONST_COMMENT_START_POS = "-120px";
 
-    $(".demo-btn").on('click', function(){
-        $.getJSON(GET_DEMO_API, function(data) {
-            console.log("slaughter", data);
-            if (data[0]['status'] === 'ok') {
-                var second_counter = 1;
-                setInterval(function(){
 
-                    // hjyang need: data[1]['comment'][i]
-                    // getDynamicComponentRendering(cfg = array('comment' => '', 'top' => '', 'left' => '', 'speed => ''', 'fontSize => ''', 'color' => ''))
-                    for(var i=0;i<data[1]['comment'].length;i++) {
-                        if (data[2]['time'][i] == second_counter) {
-                            getComponentRendering(data[1]['comment'][i]);
-                        }
-                    }
-                    second_counter = second_counter + 1;
-                }, CONST_DEMO_INTERVAL);
-            }
-        });
-    });
+    var __T = Date.now();
+    var videoOverlay = $('.video-overlay');
+
+    // barrage
+    var videoWidth = videoOverlay.first().width();
+    var videoHeight = videoOverlay.first().height();
+    var videoLeftBufferWidth = 300;
+    var videoDummyWidth = videoWidth + videoLeftBufferWidth;
+    var barrage = new Barrage(videoDummyWidth, videoHeight);
+
+    function randText() {
+        var _rs = '一二三四五六七八九零';
+        var len = Math.ceil(Math.random()*10);
+        var str = '';
+        for (var i=0; i<len; i++) {
+            var idx = Math.min(Math.floor(Math.random()*10), 9);
+            str += _rs[idx];
+        }
+        return str;
+    }
+
+
+    /*function generateText(str, size, y, speed, t, videoOverlay) {
+        setTimeout(function() {
+            var bullet = $('<div class="bullet">' + str + '</div>').first();
+            var css = {
+                'top': y+'px',
+                'font-size': size+'px',
+                'visible': 'hidden',
+                'left': videoWidth+'px',
+                'transition-property': 'left',
+                'transition-timing-function': 'linear'
+            };
+            bullet.css(css);
+            videoOverlay.append(bullet);
+            // console.log(bullet[0].clientWidth);
+            // console.log(bullet.width());
+            // console.log(videoDummyWidth);
+            var w = bullet.width();
+            var travelDist = videoDummyWidth + w;
+            var dur = travelDist / speed;
+            // shoot!
+            bullet.css('visibility', 'visible');
+            bullet.css('transition-duration', dur+'s');
+            bullet.css('left', (-videoLeftBufferWidth-w)+'px');
+            setTimeout(function() { bullet.remove(); }, dur*1000);
+        }, Math.max(t-Date.now(), 0));
+    }*/
+
+    function delegateToBarrage(str) {
+        barrage.shoot(str, {}, videoOverlay, videoLeftBufferWidth);
+        /*var outputInfo = barrage.getOutputInfo(str);
+        console.log(outputInfo);
+        console.log(outputInfo.t-__T, outputInfo.t-Date.now());
+        var size = outputInfo.size;
+        var y = outputInfo.y;
+        var speed = outputInfo.speed;
+        var t = outputInfo.t;
+        //
+        generateText(str, size, y, speed, t, videoOverlay);*/
+    }
+
+    /*
+    setInterval(function() {
+        var t = randText();
+        delegateToBarrage(t);
+        // console.log(t);
+    }, 500);
+    setInterval(function() {
+        var t = randText();
+        delegateToBarrage(t);
+        // console.log(t);
+    }, 300);
+    */
 
     /* setInterval and reach comment */
     setInterval(function(){
         $.getJSON(GET_COMMENT_API, function(data) {
-            console.log("data", data);
+            // console.log("data", data);
             // get comment
             if (data[0]['status'] === 'ok') {
 
@@ -147,7 +152,7 @@ $(document).ready(function() {
                 //getDynamicComponentRendering(cfg = array('comment' => '', 'top' => '', 'left' => '', 'speed => ''', 'fontSize => ''', 'color' => ''))
                 for(var i=0;i<data[1]['comment'].length;i++) {
                     var comment = data[1]['comment'][i];
-                    getComponentRendering(comment);
+                    delegateToBarrage(comment);
                 }
             // no comment
             } else if (data[0]['status'] === 'empty') {
@@ -156,95 +161,26 @@ $(document).ready(function() {
         });
     }, CONST_NORMAL_INTERVAL);
 
-    /*
-    function getDynamicComponentRendering(cfg = array('comment' => '', 'top' => '', 'left' => '', 'speed => ''', 'fontSize => ''', 'color' => '')) {
 
-        // array('comment', 'top', 'left', 'speed', 'fontSize', 'color')
+    $(".demo-btn").on('click', function(){
+        $.getJSON(GET_DEMO_API, function(data) {
+            // console.log("slaughter", data);
+            if (data[0]['status'] === 'ok') {
+                var second_counter = 1;
+                setInterval(function(){
 
-        var comment_container = document.createElement('div');
-        var comment_item = document.createElement('div');
-        var comment_img_wrapper = document.createElement('div');
-        var comment_img = document.createElement('img');
-
-        // comment container
-        $(comment_container).addClass('comment-container')
-                            .addClass("loc-start")
-                            .css({
-                                'top': cfg['top'],
-                                'left': cfg['left'],
-                                'fontSize': cfg['fontSize'],
-                                'color': cfg['color']
-                            });
-
-        // img container
-        for(var icon_checker=0;icon_checker<STREAMING_SYNTAX.length;icon_checker++){
-            // replace the syntax
-            if (comment.indexOf(STREAMING_SYNTAX[icon_checker].pattern) != '-1') {
-                $(comment_img).addClass("comment-img")
-                              .attr("src", STREAMING_SYNTAX[icon_checker].icon)
-                              .appendTo($(comment_img_wrapper));
-                $(comment_img_wrapper).addClass("comment-img-wrapper").appendTo($(comment_container));
+                    // hjyang need: data[1]['comment'][i]
+                    // getDynamicComponentRendering(cfg = array('comment' => '', 'top' => '', 'left' => '', 'speed => ''', 'fontSize => ''', 'color' => ''))
+                    for(var i=0;i<data[1]['comment'].length;i++) {
+                        if (data[2]['time'][i] == second_counter) {
+                            delegateToBarrage(data[1]['comment'][i]);
+                        }
+                    }
+                    second_counter = second_counter + 1;
+                }, CONST_DEMO_INTERVAL);
             }
-            if (STREAMING_SYNTAX[icon_checker].id == '6') {
-                comment = comment.replace(STREAMING_SYNTAX[icon_checker].pattern, "");
-            }
-        }
-
-        // text container
-        $(comment_item).text(comment).addClass('comment-item').appendTo(comment_container);
-        $(comment_container).animate({
-            left: CONST_COMMENT_START_POS,
-        }, (cfg['speed']), function(){
-            $(this).remove();
-        }).appendTo($(".video-overlay"));
-    }
-    */
-
-    function getComponentRendering(comment) {
-        /* random */
-        var getTop = Math.floor((Math.random() * STREAMING_CONF.top.length));
-        var getLeft = Math.floor((Math.random() * STREAMING_CONF.left.length));
-        var getSpeed = Math.floor((Math.random() * STREAMING_CONF.speed.length));
-        var getFontSize = Math.floor((Math.random() * STREAMING_CONF.fontSize.length));
-        var getColor = Math.floor((Math.random() * STREAMING_CONF.color.length));
-
-        var comment_container = document.createElement('div');
-        var comment_item = document.createElement('div');
-        var comment_img_wrapper = document.createElement('div');
-        var comment_img = document.createElement('img');
-
-        /* comment container */
-        $(comment_container).addClass('comment-container')
-                            .addClass("loc-start")
-                            .css({
-                                'top': (STREAMING_CONF.top[getTop]*1.2) + "px",
-                                'left': ($(window).width() + STREAMING_CONF.left[getLeft] * 50) + "px",
-                                'fontSize': (STREAMING_CONF.fontSize[getFontSize] + "px"),
-                                'color': STREAMING_CONF.color[getColor]
-                            });
-
-        /* img container */
-        for(var icon_checker=0;icon_checker<STREAMING_SYNTAX.length;icon_checker++){
-            // replace the syntax
-            if (comment.indexOf(STREAMING_SYNTAX[icon_checker].pattern) != '-1') {
-                $(comment_img).addClass("comment-img")
-                              .attr("src", STREAMING_SYNTAX[icon_checker].icon)
-                              .appendTo($(comment_img_wrapper));
-                $(comment_img_wrapper).addClass("comment-img-wrapper").appendTo($(comment_container));
-            }
-            if (STREAMING_SYNTAX[icon_checker].id == '6') {
-                comment = comment.replace(STREAMING_SYNTAX[icon_checker].pattern, "");
-            }
-        }
-
-        /* text container */
-        $(comment_item).text(comment).addClass('comment-item').appendTo(comment_container);
-        $(comment_container).animate({
-            left: CONST_COMMENT_START_POS,
-        }, (STREAMING_CONF.speed[getSpeed] * 2000), function(){
-            $(this).remove();
-        }).appendTo($(".video-overlay"));
-    }
+        });
+    });
 
 });
 </script>
