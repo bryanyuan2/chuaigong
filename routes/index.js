@@ -100,7 +100,7 @@ botModel.handleMessage = function(req, res) {
             db.collection("comments").insert(mdoc);
         });
 
-        var commentPath = path.join(__dirname+'/log_demo/comment');
+        var commentPath = path.join(__dirname, 'comment');
         var timestamp = Date.now();
         fs.appendFileSync(commentPath, comment + '|' + timestamp + '\n');
     }
