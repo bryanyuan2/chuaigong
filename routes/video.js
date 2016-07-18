@@ -1,6 +1,8 @@
 var _ = require("lodash");
 var path = require("path");
 var fs = require('fs');
+var mongoClient = require('mongodb').MongoClient;
+var uri = 'mongodb://localhost:27017/chuaigong';
 var botModel = {};
 
 /* previous_tstamp */
@@ -36,7 +38,7 @@ botModel.getSlaughter = function(req, res) {
   });
 };
 
-botModel.getComment = function(req, res) {
+botModel.getCommentFromFile = function(req, res) {
   var CONST_LOG_FILENAME = "comment";
   var current_tstamp = new Date().getTime();
   var target_result = Array();
@@ -69,6 +71,45 @@ botModel.getComment = function(req, res) {
     }
 
   });
+};
+
+botModel.getCommentFromMongo = function(req, res) {
+
+    var current_tstamp = new Date().getTime();
+    var results = [];
+    var comment;
+    var cursor;
+
+    mongoClient.connect(uri, function fetchDocument (err, db) {
+      if (err) {
+        console.error(err);
+        res.send([{status: 'empty'}, {comment: ''}]);
+      } else {
+        db.collection("comments")
+          .find({ timestamp: { $gt: previous_tstamp, $lte: current_tstamp } })
+          .toArray(function(err, docs) {
+
+            // get all comments
+            results = docs.map(function(doc) { return doc.comment || ''; });
+
+            // update previous timestamp
+            previous_tstamp = current_tstamp;
+
+            // emit results
+            if(results.length > 0){
+              res.send([
+                { status: 'ok' },
+                { comment: results }
+              ]);
+            } else {
+              res.send([
+                { status: 'empty' },
+                { comment: ''}
+              ]);
+            }
+        });
+      }
+    });
 };
 
 botModel.getVideo = function(req, res) {

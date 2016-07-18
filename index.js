@@ -31,7 +31,9 @@ router.post('/index', index.handleMessage);
 */
 router.get('/livedemoit', video.getVideo);
 
-router.get('/getcomment', video.getComment);
+router.get('/getcomment', video.getCommentFromMongo);
+router.get('/getfilecomment', video.getCommentFromFile);
+
 router.get('/getslaughter', video.getSlaughter);
 
 var whitelist = [
