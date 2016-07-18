@@ -7,15 +7,14 @@ var mongoClient = require('mongodb').MongoClient;
 var botModel = {};
 var uri = 'mongodb://localhost:27017/chuaigong';
 
-var DOMAIN = "hack.wjhuang.net";
 var STREAMING_SYNTAX = {
-    "讚":"http://" + DOMAIN + ":3000/images/icon/bot-thumb.png",
-    "好球": "http://" + DOMAIN + ":3000/images/icon/bot-ball.png",
-    "謝謝": "http://" + DOMAIN + ":3000/images/icon/bot-thanks.png",
-    "幹": "http://" + DOMAIN + ":3000/images/icon/bot-dislike.png",
-    "爽": "http://" + DOMAIN + ":3000/images/icon/bot-cheers.png",
-    "[LIKE]": "http://" + DOMAIN + ":3000/images/icon/bot-like.png",
-    "[SUPERLIKE]": "http://" + DOMAIN + ":3000/images/icon/bot-thumb.png"
+    "讚": "/images/icon/bot-thumb.png",
+    "好球": "/images/icon/bot-ball.png",
+    "謝謝": "/images/icon/bot-thanks.png",
+    "幹": "/images/icon/bot-dislike.png",
+    "爽": "/images/icon/bot-cheers.png",
+    "[LIKE]": "/images/icon/bot-like.png",
+    "[SUPERLIKE]": "/images/icon/bot-thumb.png"
 };
 
 var likes = [
