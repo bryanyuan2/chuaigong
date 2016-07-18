@@ -84,16 +84,12 @@ botModel.handleMessage = function(req, res) {
 
         // Build a mongo document
         var mdoc = {
-            message: message,
+            message: src || message,
             timestamp: Date.now(),
             type: messageType,
             senderId: userid,
             comment: comment
         };
-
-        if (src) {
-            mdoc['src'] = src;
-        }
 
         // insert to mongodb
         mongoClient.connect(uri, function insertDocument (err, db) {
