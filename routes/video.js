@@ -41,7 +41,7 @@ botModel.getComment = function(req, res) {
   var current_tstamp = new Date().getTime();
   var target_result = Array();
 
-  fs.readFile( path.join(__dirname+'/log_demo/'+ CONST_LOG_FILENAME), 'utf8', function (err,data) {
+  fs.readFile( path.join(__dirname, CONST_LOG_FILENAME), 'utf8', function (err,data) {
     if (err) {
       return console.log(err);
     }
