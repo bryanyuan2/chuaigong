@@ -1,6 +1,7 @@
 var express = require('express');
 var index = require('./routes/index');
 var video = require('./routes/video');
+var socket = require('./routes/socket');
 var app = express();
 var bodyParser = require('body-parser');
 var port = process.env.PORT || 3000;
@@ -8,6 +9,10 @@ var router = express.Router();
 var helmet = require('helmet');
 var cors = require('cors');
 var path = require("path");
+
+// integrate Socket.IO
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -24,6 +29,16 @@ router.get('/', function(req, res) {
     description: restful api to get msg indexing
 */
 router.post('/index', index.handleMessage);
+
+
+/* Socket IO */
+io.on('connection', function(socket){
+    socket.on('chat', function(msg){
+        io.emit('chat', msg);
+    });
+});
+
+router.get('/socket', socket.init);
 
 /*
     path: /bot/livedemoit
@@ -54,5 +69,5 @@ app.use(cors(corsOptions));
 */
 app.use('/bot', router);
 
-app.listen(port);
+server.listen(port);
 console.log('listening on port ' + port);
