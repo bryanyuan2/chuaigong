@@ -1,9 +1,8 @@
 # 踹共 CHUAIGONG BOT
 
-![CHUAIGONG LOGO](http://i.imgur.com/IDfkVvc.png)
-
 > 最專業的彈幕機器人
 
+![CHUAIGONG LOGO](http://i.imgur.com/IDfkVvc.png)
 
 ## Quick Start
 

@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+        .section {
+            padding: 10px;
+            width: 100%;
+        }
+        form {
+            width: 100%;
+        }
+        input {
+            border: 0;
+            padding: 8px;
+            min-width: 384px;
+            /*margin-right: .5%;*/
+            border: 1px solid #eee;
+            outline: none;
+            font-size: 14px;
+        }
+        button {
+            border: none;
+            padding: 10px;
+            background-color: #0078e7;
+            border-radius: 1px;
+            font-size: 14px;
+            color: white;
+            padding: 7px 12px;
+        }
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            font-family: Arial;
+
+        }
+        #messages li {
+            padding: 5px 10px;
+            line-height: 2em;
+        }
+        #messages li:nth-child(odd) {
+            background: #eee;
+        }
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+        <div class="section">
+            <form action="">
+                <input id="input-bar" autocomplete="off" />
+                <button id="send-btn">Send</button>
+            </form>
+        </div>
+        <div class="section">
+            <ul id="messages"></ul>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+
+    <script>
+      var socket = io();
+      $('form').submit(function() {
+        socket.emit('chat', $('#input-bar').val());
+        $('#input-bar').val('');
+        return false;
+      });
+      socket.on('chat', function(msg){
+        $('#messages').append($('<li>').text(msg));
+      });
+    </script>
+  </body>
+</html>

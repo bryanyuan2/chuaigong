@@ -17,7 +17,8 @@
     "lodash": "^4.13.1",
     "mongodb": "^2.2.2",
     "nodemon": "^1.9.2",
-    "promise": "^7.1.1"
+    "promise": "^7.1.1",
+    "socket.io": "^1.4.8"
   },
   "engines": {
     "node": "0.12.7"
