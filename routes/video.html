@@ -18,10 +18,34 @@
             </video>-->
         <iframe width="100%" height="100%" src="https://www.youtube.com/embed/1ZpCNbc6QIQ?autoplay=1&start=7660" frameborder="0" allowfullscreen></iframe>
     </div>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/lodash/4.13.1/lodash.min.js"></script>
     <script src="/barrage.js"></script>
-    <script src="/main.js"></script>
+    <!-- <script src="/main.js"></script> -->
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            var videoOverlay = $('.video-overlay');
+
+            // barrage
+            var videoWidth = videoOverlay.first().width();
+            var videoHeight = videoOverlay.first().height();
+            var videoLeftBufferWidth = 300;
+            var videoDummyWidth = videoWidth + videoLeftBufferWidth;
+            var barrage = new Barrage(videoDummyWidth, videoHeight);
+
+
+            function delegateToBarrage(str) {
+                barrage.shoot(str, {}, videoOverlay, videoLeftBufferWidth);
+            }
+
+            var socket = io();
+            socket.on('chat', function(msg) {
+                delegateToBarrage(msg);
+            });
+        });
+    </script>
 </body>
 
 </html>
