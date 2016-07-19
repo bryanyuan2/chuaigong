@@ -1,6 +1,6 @@
 # 踹共 CHUAIGONG BOT
 
-![CHUAIGONG LOGO](https://raw.githubusercontent.com/bryanyuan2/chuaigong-bot/master/resources/chuaigong_logo.png)
+![CHUAIGONG LOGO](http://i.imgur.com/IDfkVvc.png)
 
 > 最專業的彈幕機器人
 
@@ -14,4 +14,4 @@ PORT=3000 npm start
 
 ## Screenshot
 
-![CHUAIGONG LOGO](https://raw.githubusercontent.com/bryanyuan2/chuaigong-bot/master/resources/screenshot.png)
+![CHUAIGONG LOGO](http://i.imgur.com/YlOYO7v.png)
