@@ -1,6 +1,7 @@
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="/video.css">
+    <link rel="stylesheet" type="text/css" href="/video.css" />
+    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/cupertino/jquery-ui.css" />
 </head>
 
 <body>
@@ -9,19 +10,24 @@
     </div>
     <div class="demo-btn">slaughter</div>
     <div class="video-section">
-        <div class="video-overlay">
-            <!--<div class="comment-item">測試留言 A</div>-->
-        </div>
         <!-- sample video -->
         <!--<video class="bot-video" width="100%" height="100%" autobuffer controls autoplay>
                 <source id="mp4" src="http://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4" type="video/mp4">
             </video>-->
         <iframe width="100%" height="100%" src="https://www.youtube.com/embed/1ZpCNbc6QIQ?autoplay=1&start=7660" frameborder="0" allowfullscreen></iframe>
+        <div class="video-overlay">
+            <!--<div class="comment-item">測試留言 A</div>-->
+        </div>
+        <div id="spam-slider">
+            
+        </div>
     </div>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/lodash/4.13.1/lodash.min.js"></script>
     <script src="/barrage.js"></script>
+    <script src="/spammer.js"></script>
     <!-- <script src="/main.js"></script> -->
     <script type="text/javascript">
         $(document).ready(function() {
@@ -35,10 +41,18 @@
             var videoDummyWidth = videoWidth + videoLeftBufferWidth;
             var barrage = new Barrage(videoDummyWidth, videoHeight);
 
-
             function delegateToBarrage(str) {
                 barrage.shoot(str, {}, videoOverlay, videoLeftBufferWidth);
             }
+
+            var spammer = new Spammer(delegateToBarrage);
+
+            $('#spam-slider').slider({
+                change: function(e, ui) {
+                    // console.log(ui.value);
+                    spammer.setRateByScore(ui.value);
+                }
+            });
 
             var socket = io();
             socket.on('chat', function(msg) {
