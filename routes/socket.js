@@ -1,71 +1,80 @@
-"use strict"
+'use strict';
 
 var _get = require('lodash/get');
 
 module.exports = function (io) {
 
-    var socket = {};
+    var factory = {};
 
     var STREAMING_SYNTAX = {
-        "讚": "/images/icon/bot-thumb.png",
-        "好球": "/images/icon/bot-ball.png",
-        "謝謝": "/images/icon/bot-thanks.png",
-        "幹": "/images/icon/bot-dislike.png",
-        "爽": "/images/icon/bot-cheers.png",
-        "[LIKE]": "/images/icon/bot-like.png",
-        "[SUPERLIKE]": "/images/icon/bot-thumb.png"
+        '讚': '/images/icon/bot-thumb.png',
+        '好球': '/images/icon/bot-ball.png',
+        '謝謝': '/images/icon/bot-thanks.png',
+        '幹': '/images/icon/bot-dislike.png',
+        '爽': '/images/icon/bot-cheers.png',
+        '[LIKE]': '/images/icon/bot-like.png',
+        '[SUPERLIKE]': '/images/icon/bot-thumb.png'
     };
-    var likes = [
-        '851582_369239386556143_1497813874',
-        '851587_369239346556147_162929011',
-        '851557_369239266556155_759568595'
-    ];
 
-    socket.handleMessage = function (req, res) {
+    // var likes = [
+    //     '851582_369239386556143_1497813874',
+    //     '851587_369239346556147_162929011',
+    //     '851557_369239266556155_759568595'
+    // ];
+
+    /*
+     * Method to extract url from attachment
+     * @param message {object/string} incoming facebook message object or string
+     * @returns {string} url string in an attachment
+     */
+    factory._extractAttachmentsUrl = function (message) {
+        return _get(message, '0.payload.url', '');
+    };
+        // customized output for stickers
+
+    /*
+     * Method to replace some keywords with predefined stickers
+     * @param messageText {string} message text string, maybe text, url or empty string
+     * @param replacements {object} an object containing the mapping between keyword and image src
+     * @returns {string} html string
+     */
+    factory._replaceCostumizedSticker = function (messageText, replacements) {
+
+        var src = messageText in replacements ? replacements[messageText] : messageText;
+        return src && '<img src="' + src + '" class="sticker" />' || '';
+    };
+
+    /*
+     * Method to handle incoming messages
+     * @param req request
+     * @param res response
+     */
+    factory.handleMessage = function (req, res) {
+
         var body = req.body;
-        var attachment;
         var message = body.message || '';
-        var messageType = body.type || 'text';
-        var userid = body.userid || 'test';
+        var messageType = body.type || null;
         var messageText = '';
+        var comment;
 
-        // process received attachments
         if(messageType === 'attachments') {
-            var sticker_url = _get(message, '0.payload.url', '');
-            messageText = sticker_url;
-            for (var i=0; i<likes.length; i++) {
-                if(sticker_url.indexOf(likes[i]) > 0) {
-                    messageText = '[LIKE]';
-                }
-            }
+            messageText = factory._extractAttachmentsUrl(message);
+            comment = factory._replaceCostumizedSticker(messageText, STREAMING_SYNTAX);
         }
-        // process received text
         else if (messageType === 'text') {
-            // TODO: Find a proper way to suppress echo
-            if (message.indexOf('已加入 #') >= 0) {
-                // do nothing
-            } else {
-                messageText = message;
-            }
+            comment = message.indexOf('已加入 #') < 0 && message;
         }
 
-        // save received messageText
-        if (messageText) {
-            var comment = messageText;
-            var src;
+        // TODO: recognize user id
+        // ...
+        // var userid = body.userid || 'test';
 
-            // customized output for stickers
-            if(messageText in STREAMING_SYNTAX) {
-                src = STREAMING_SYNTAX[messageText];
-                comment = '<img src="' + src + '" class="sticker" />';
-            } else if (messageType === 'attachments') {
-                src = messageText;
-                comment = '<img src="' + src + '" class="sticker" />';
-            }
-
+        // emit comment
+        if (comment) {
             io.emit('chat', comment);
         }
         res.status(200).end();
-    }
-    return socket;
+    };
+
+    return factory;
 };

@@ -1,3 +1,5 @@
+"use strict"
+
 var express = require('express');
 var video = require('./routes/video');
 var app = express();
