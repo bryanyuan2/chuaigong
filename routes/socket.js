@@ -1,8 +1,10 @@
 "use strict"
 
+var _get = require('lodash/get');
+
 module.exports = function (io) {
 
-    var botModel = {};
+    var socket = {};
 
     var STREAMING_SYNTAX = {
         "讚": "/images/icon/bot-thumb.png",
@@ -19,7 +21,7 @@ module.exports = function (io) {
         '851557_369239266556155_759568595'
     ];
 
-    botModel.handleMessage = function (req, res) {
+    socket.handleMessage = function (req, res) {
         var body = req.body;
         var attachment;
         var message = body.message || '';
@@ -65,5 +67,5 @@ module.exports = function (io) {
         }
         res.status(200).end();
     }
-    return botModel;
+    return socket;
 };
