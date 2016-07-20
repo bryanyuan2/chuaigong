@@ -1,4 +1,4 @@
-"use strict"
+'use strict';
 
 var express = require('express');
 var video = require('./routes/video');
@@ -8,7 +8,6 @@ var port = process.env.PORT || 3000;
 var router = express.Router();
 var helmet = require('helmet');
 var cors = require('cors');
-var path = require("path");
 
 // integrate Socket.IO
 var server = require('http').Server(app);
