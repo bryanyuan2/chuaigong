@@ -48,6 +48,12 @@ var STREAMING_SYNTAX = {
     "[LIKE]": "/images/icon/bot-like.png",
     "[SUPERLIKE]": "/images/icon/bot-thumb.png"
 };
+var likes = [
+    '851582_369239386556143_1497813874',
+    '851587_369239346556147_162929011',
+    '851557_369239266556155_759568595'
+];
+
 router.post('/index', function handleMessage(req, res) {
 
     var body = req.body;
