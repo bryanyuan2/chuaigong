@@ -9,6 +9,7 @@ var router = express.Router();
 var helmet = require('helmet');
 var cors = require('cors');
 var path = require("path");
+var _get = require('lodash/get');
 
 // integrate Socket.IO
 var server = require('http').Server(app);
